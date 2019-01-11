@@ -1,12 +1,15 @@
 const { Router } = require('express');
-const request = require('request');
+const request = require("request-promise");
 const app = require('../app');
 
-/*
-const lookupItem = (req, res) => {
-	//We'll move things outside once the basic functionality works
+
+
+
+const lookupItem = async (req, res) => {
+	let rawCards = JSON.parse(await request ('http://www.clashapi.xyz/api/cards'));
+	console.log(rawCards);
 }
-*/
+
 
 module.exports = new Router()
 
@@ -39,16 +42,20 @@ module.exports = new Router()
 							//console.log(driversIDs);
 
 							const result = cardIDs.concat(pkmnIDs.concat(driversIDs));
+							let resultJSON = JSON.stringify(result);
+							//console.log(resultJSON);
+							//response.send (resultJSON);
+
 						}
 					);
 				}
 			);
 		}
 	);
-	
+	lookupItem(req, res);
     res.sendStatus(200);
   })
-
+	
   .get('/:id', (req, res) => {
     // Code here
     res.sendStatus(200);
