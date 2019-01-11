@@ -17,6 +17,16 @@ module.exports = new Router()
 			let info = JSON.parse(body);
 			const cardIDs = info.map(card => {return {id:card._id, name:card.name}});
 			//console.log(cardIDs);
+
+			request (
+				'https://pokeapi.co/api/v2/pokemon/',
+				(error, response, body) => {
+					let obj = JSON.parse(body);
+					const pkmnIDs = obj.results.map(pkmn => {return {id:pkmn.url.slice(0, -1).split("/").pop(), name:pkmn.name}});
+					//console.log(pkmnIDs);
+
+				}
+			);
 		}
 	);
 	
