@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const request = require("request-promise");
-const app = require('../app');
 
 
 const apis = new Map([
@@ -40,17 +39,13 @@ const lookupItemByID = async (req, res) => {
 	try{
 		raw = JSON.parse(await request (apis.get("Clash")+req.params.id));
 		result = {id:raw._id, image:apis.get("Clash_Img")+raw.idName+".png", name:raw.name};
-	}catch (err){
-		console.log("Card not found");
-	}
+	}catch (err){}
 
-	// test ID: 1
+	// test ID: 151/mew
 	try{
 		raw = JSON.parse(await request (apis.get("Pokemon")+req.params.id));
 		result = {id:raw.id, image:raw.sprites.front_default, name:raw.name};
-	}catch (err){
-		console.log("Pokemon not found");
-	}
+	}catch (err){}
 	
 	// test ID: abate
 	try{
@@ -60,9 +55,7 @@ const lookupItemByID = async (req, res) => {
 				return {id:driver.driverId, image:driver.url, name:driver.givenName+' '+driver.familyName}
 			});
 		}
-	}catch (err){
-		console.log("Driver not found");
-	}
+	}catch (err){}
 	
 	res.send(JSON.stringify(result));
 }
