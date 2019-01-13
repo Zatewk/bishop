@@ -20,13 +20,14 @@ exports.getDriverByID = async (req, res) => {
 
 	try{	
 		raw = await request ({method: 'GET', uri: drvrs+"/"+req.params.id+toJson, json: true});
+		
 		if (raw.MRData.total == 1){
 			result = raw.MRData.DriverTable.Drivers.map(driver => {
 				return {id:driver.driverId, image:driver.url, name:driver.givenName+' '+driver.familyName}
 			});
 		}
 	}catch (err){
-		result = null;
+		return raw;
 	}
 
 	return result;

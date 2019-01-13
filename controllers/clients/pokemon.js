@@ -21,7 +21,7 @@ exports.getPkmnByID = async (req, res) => {
 		raw = await request ({method: 'GET', uri: pkmns+req.params.id, json: true});
 		result = {id:raw.id, image:raw.sprites.front_default, name:raw.name};
 	}catch (err){
-		result = null;
+		return raw;
 	}
 	return result;
 }
