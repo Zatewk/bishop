@@ -1,5 +1,8 @@
 const { Router } = require('express');
 const request = require("request-promise");
+const clashAPI = require("./clients/clash");
+const pkmnAPI = require("./clients/pokemon");
+const driversAPI = require ("./clients/drivers"); 
 
 
 const apis = new Map([
@@ -10,23 +13,15 @@ const apis = new Map([
 ]);
 
 const lookupItems = async (req, res) => {
-	let rawCards = JSON.parse(await request (apis.get("Clash")));
-	let rawPkmns = JSON.parse(await request (apis.get("Pokemon")));
-	let rawDrivers = JSON.parse(await request (apis.get("Drivers")+".json"));
+	let cards = clashAPI.getCardList();
+	let pkmns = pkmnAPI.getPkmnList();
+	let drivers = driversAPI.getDriverList();
 
-	let cardIDs = rawCards.map(card => {
-		return {id:card._id, name:card.name}
-	});
+	let values = await Promise.all([cards, pkmns, drivers]);
 
-	let pkmnIDs = rawPkmns.results.map(pkmn => {
-		return {id:pkmn.url.slice(0, -1).split("/").pop(), name:pkmn.name}
-	});
+	//console.log(values);
 
-	let driversIDs = rawDrivers.MRData.DriverTable.Drivers.map(driver => {
-		return {id:driver.driverId, name:driver.givenName+' '+driver.familyName}
-	});
-
-	let result = cardIDs.concat(pkmnIDs.concat(driversIDs));
+	let result = values[0].concat(values[1].concat(values[2]));
 
 	res.send(JSON.stringify(result));
 }
