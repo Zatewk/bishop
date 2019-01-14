@@ -6,42 +6,30 @@ const driversAPI = require ("./clients/drivers");
 
 
 const lookupItems = async (req, res) => {
-	let cardPromise;
-	let pkmnPromise;
-	let driverPromise;
-	let values;
-	let result;
+	let cardPromise = clashAPI.getCardList();
+	let pkmnPromise = pkmnAPI.getPkmnList();
+	let driverPromise = driversAPI.getDriverList();
 
-	cardPromise = clashAPI.getCardList();
-	pkmnPromise = pkmnAPI.getPkmnList();
-	driverPromise = driversAPI.getDriverList();
+	let values = await Promise.all([cardPromise, pkmnPromise, driverPromise]);
 
-	values = await Promise.all([cardPromise, pkmnPromise, driverPromise]);
-
-	result = values[0].concat(values[1].concat(values[2]));
+	let result = values[0].concat(values[1].concat(values[2]));
 
 	res.send(JSON.stringify(result));
 }
 
 const lookupItemByID = async (req, res) => {
-	let cardPromise;
-	let pkmnPromise;
-	let driverPromise;
-	let values;
-	let i;
+	let cardPromise = clashAPI.getCardByID(req, res);
+	let pkmnPromise = pkmnAPI.getPkmnByID(req, res);
+	let driverPromise = driversAPI.getDriverByID(req, res);
 
-	cardPromise = clashAPI.getCardByID(req, res);
-	pkmnPromise = pkmnAPI.getPkmnByID(req, res);
-	driverPromise = driversAPI.getDriverByID(req, res);
-
-	values = await Promise.all([cardPromise, pkmnPromise, driverPromise]);
+	let values = await Promise.all([cardPromise, pkmnPromise, driverPromise]);
 	
-	i = 0;
-	while (i < values.length && typeof values[i] === "undefined") {
-		i++;
+	let iterator = 0;
+	while (iterator < values.length && typeof values[iterator] === "undefined") {
+		iterator++;
 	}	
 
-	res.send(JSON.stringify(values[i]));
+	res.send(JSON.stringify(values[iterator]));
 }
 
 module.exports = new Router()
